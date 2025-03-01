@@ -1,4 +1,12 @@
 #!/bin/bash
 
 cd ${BASH_SOURCE%/*}/..
-docker-compose down
+
+if command -v nvidia-smi &> /dev/null
+then
+    echo "GPU detected, stopping Ollama with GPU support"
+    docker-compose -f docker-compose-gpu.yml down
+else
+    echo "No GPU detected, stopping Ollama without GPU support"
+    docker-compose -f docker-compose-cpu.yml down
+fi
